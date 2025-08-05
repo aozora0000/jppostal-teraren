@@ -1,0 +1,17 @@
+{
+  "name": "@aozora0000/jppostal-teraren",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "author": "Kohei Kinoshita",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
