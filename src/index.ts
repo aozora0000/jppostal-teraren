@@ -39,15 +39,23 @@ export type Address = {
     is_include_area: boolean;
 };
 
+const cache = new Map<string, Address>();
+
 export const yubin = async (value: string): Promise<Address> => {
     return new Promise(async (resolve, reject) => {
         if(!validate(value)) {
             reject("THE POSTAL CODE IS INVALID");
         }
         try {
-            const response =  await fetch(`${URL}/${sanitize(value)}.json`);
+            const postalcode = sanitize(value);
+            if(cache.has(postalcode)) {
+                resolve(cache.get(postalcode)!)
+                return;
+            }
+            const response =  await fetch(`${URL}/${postalcode}.json`);
             if(!response.ok) {
                 reject("POSTAL CODE NOT FOUND");
+                return;
             }
             const data: Address = await response.json();
             (Object.keys(data) as (keyof Address)[]).forEach(key => {
@@ -57,6 +65,7 @@ export const yubin = async (value: string): Promise<Address> => {
                 }
             });
             data.prefecture_id = Prefectures.indexOf(data.prefecture);
+            cache.set(postalcode, data);
             resolve(data);
         } catch(e) {
             reject("POSTAL CODE NOT FOUND");
