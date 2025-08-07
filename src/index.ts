@@ -40,6 +40,7 @@ export type Address = {
 };
 
 const cache = new Map<string, Address>();
+export const clearCache = () => cache.clear();
 
 export const yubin = async (value: string): Promise<Address> => {
     return new Promise(async (resolve, reject) => {
