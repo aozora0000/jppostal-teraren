@@ -17,6 +17,25 @@ describe('郵便番号検索機能のテスト', () => {
         expect(result.city).toBeDefined();
     });
 
+    // 住所フィールドのテスト
+    test('addressフィールドが正しく設定される', async () => {
+        const result = await yubin('100-0001');
+        expect(result.address).toBeDefined();
+        expect(result.address).toBe('千代田区 千代田')
+    });
+
+    test('fullAddressフィールドが正しく設定される', async () => {
+        const result = await yubin('100-0001');
+        expect(result.fullAddress).toBeDefined();
+        expect(result.fullAddress).toBe('東京都 千代田区 千代田')
+    });
+
+    test('fullAddressフィールドに専用番号の事業者オフィス名が入る', async () => {
+        const result = await yubin('540-8510');
+        expect(result.fullAddress).toBeDefined();
+        expect(result.fullAddress).toBe("大阪府 大阪市中央区 城見 １丁目３番５０号読売テレビ本社ウエストウイング７階 株式会社　エイデック")
+    });
+
     // 異常系のテスト
     test('無効な郵便番号でエラーになる', async () => {
         await expect(yubin('1234567890')).rejects.toEqual('THE POSTAL CODE IS INVALID');

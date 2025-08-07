@@ -17,26 +17,34 @@ export const Prefectures = [
     '宮崎県', '鹿児島県', '沖縄県'
 ];
 
+/**
+ * @see https://postcode.teraren.com/doc/redoc#schema/Postcode
+ */
 export type Address = {
-    jis: string;
-    old: string;
-    prefecture: string;
-    prefecture_id: number;
-    prefecture_kana: string;
-    prefecture_roman: string;
-    city: string;
-    city_kana: string;
-    city_roman: string;
-    suburb: string;
-    suburb_kana: string;
-    suburb_roman: string;
-    street_address: string;
-    office: string;
-    office_kana: string;
+    // API Response
+    old: string; // 旧３桁番号
+    prefecture: string; // 都道府県
+    prefecture_kana: string;　// 都道府県カナ
+    prefecture_roman: string; // 都道府県ローマ字
+    city: string; // 市名
+    city_kana: string; // 市名カナ
+    city_roman: string; // 市名ローマ字
+    suburb: string; // 町名
+    suburb_kana: string; // 町名カナ
+    suburb_roman: string; // 町名ローマ字
+    street_address: string; // 小字名、丁目、番地等
+    office: string; // 大口事業所名
+    office_kana: string; // 大口事業所名カナ
+    office_roman: string; // 大口事業所名ローマ字
     is_separated_suburb: boolean;
     is_koaza: boolean;
     is_chome: boolean;
     is_include_area: boolean;
+
+    // Custom Attribute
+    prefecture_id: number; // 都道府県ID(Prefecturesの逆リレーション)
+    address: string; // city + suburb + street_address
+    fullAddress: string; // prefecture + city + suburb + street_address
 };
 
 const cache = new Map<string, Address>();
@@ -66,6 +74,8 @@ export const yubin = async (value: string): Promise<Address> => {
                 }
             });
             data.prefecture_id = Prefectures.indexOf(data.prefecture);
+            data.address = [data.city, data.suburb, data.street_address, data.office].filter(val => val !== "").join(' ');
+            data.fullAddress = [data.prefecture, data.city, data.suburb, data.street_address, data.office].filter(val => val !== "").join(' ');
             cache.set(postalcode, data);
             resolve(data);
         } catch(e) {
